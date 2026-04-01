@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SENTINEL-FIN // CYBER-PUNK LEDGER</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..1000;1,9..40,300..1000&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Syne:wght@400..800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./ledger.css" />
+</head>
+<body class="ledger-root">
+  <div class="ledger-grid">
+    <header class="ledger-header">
+      <div class="brand">
+        <span class="brand-main">SENTINEL-FIN</span>
+        <span class="brand-sep">//</span>
+        <span class="brand-sub">CYBER-PUNK LEDGER</span>
+      </div>
+      <div class="header-mid">
+        <div class="attack-counter" id="attackCounter">
+          <span class="ac-num" id="acNum">0</span><span class="ac-den">/10</span>
+          <div class="ac-label">ATTACKS IDENTIFIED</div>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="status-pill" id="statusPill">LIVE</div>
+        <span class="session-id" id="sessionId">SESSION —</span>
+        <div class="clock" id="clock">--:--:--</div>
+        <div class="threat-wrap">
+          <div class="threat-bar" id="threatBar" aria-label="Threat level"></div>
+          <span class="threat-label" id="threatLabel">THREAT: LOW</span>
+        </div>
+      </div>
+    </header>
+
+    <aside class="panel-left">
+      <div class="panel-head">
+        <h2>DETECTED ATTACKS</h2>
+        <div class="panel-rule"></div>
+        <div class="attack-stats">
+          <span><strong id="atkActive">0</strong> ACTIVE</span>
+          <span><strong id="atkResolved">0</strong> RESOLVED</span>
+        </div>
+      </div>
+      <div class="attack-registry" id="attackRegistry"></div>
+    </aside>
+
+    <main class="graph-wrap">
+      <div class="alert-banner" id="alertBanner" aria-hidden="true">
+        <span class="alert-blink"></span>
+        <span class="alert-text" id="alertText"></span>
+        <button type="button" class="alert-dismiss" id="alertDismiss" aria-label="Dismiss">×</button>
+      </div>
+      <div class="graph-badges" id="graphBadges"></div>
+      <svg id="graphSvg" class="graph-svg"></svg>
+      <div class="tooltip" id="nodeTooltip" hidden></div>
+      <div class="controls-bar" id="controlsBar">
+        <button type="button" id="btnTrigger">INJECT ATTACK</button>
+        <button type="button" id="btnReset">RESET SIM</button>
+        <button type="button" id="btnExport" class="hidden">EXPORT REPORT</button>
+      </div>
+    </main>
+
+    <aside class="panel-right">
+      <div class="metric-grid" id="metricGrid"></div>
+      <div class="risk-block">
+        <div class="risk-head"><span>RISK SCORE</span><span id="riskPct">0%</span></div>
+        <div class="risk-segments" id="riskSegments"></div>
+      </div>
+      <div class="intel-panel">
+        <h3 class="intel-title">INTEL FEED</h3>
+        <div class="intel-feed" id="intelFeed"></div>
+      </div>
+      <div class="sar-card hidden" id="sarCard"></div>
+    </aside>
+
+    <footer class="filter-bar" id="filterBar"></footer>
+  </div>
+
+  <div class="completion-banner hidden" id="completionBanner">
+    ALL 10 ATTACKS IDENTIFIED — NETWORK FROZEN — REFER TO COMPLIANCE
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
