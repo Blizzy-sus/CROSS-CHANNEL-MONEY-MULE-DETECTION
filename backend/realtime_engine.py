@@ -22,6 +22,9 @@ class RealTimeEngine:
         self.banned_accounts   = set()
         self.attack_time       = None
         self.last_attack_name  = None
+        self.last_attack_id    = None
+        self.last_attack_index = None
+        self.attack_counter    = 0
         self._attacking        = False
         self._tx_timestamps    = deque(maxlen=200)
         self._tps              = 0.0
@@ -225,17 +228,21 @@ class RealTimeEngine:
                 accounts_copy     = self.accounts_df.copy()
                 transactions_copy = self.transactions_df.copy()
 
-            attack_fn = attack_registry[attack_index % len(attack_registry)]
+            idx = attack_index % len(attack_registry)
+            attack_fn = attack_registry[idx]
             upd_acc, upd_tx, attack_name, attack_time = attack_fn(
                 accounts_copy, transactions_copy, preferred_ids=pool
             )
             attack_time = pd.Timestamp(attack_time)
 
             with self.lock:
+                self.attack_counter += 1
                 self.accounts_df     = upd_acc
                 self.transactions_df = upd_tx
                 self.attack_time     = attack_time
                 self.last_attack_name = attack_name
+                self.last_attack_id = f"ATK-{self.attack_counter:03d}"
+                self.last_attack_index = idx
 
         finally:
             self._attacking = False
@@ -294,6 +301,9 @@ class RealTimeEngine:
             self.accounts_df, self.transactions_df = reset_simulation()
             self.attack_time       = None
             self.last_attack_name  = None
+            self.last_attack_id    = None
+            self.last_attack_index = None
+            self.attack_counter    = 0
             self._suspicion_scores = {}
             self._tps              = 0.0
             self._acc_counter      = None

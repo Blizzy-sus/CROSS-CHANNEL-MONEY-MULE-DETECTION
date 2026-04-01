@@ -1,13 +1,25 @@
 import hashlib
-from fastapi import FastAPI, Body
+from pathlib import Path
+
+from fastapi import Body, FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 import threading
 import pandas as pd
 import math
 
 from backend.realtime_engine import RealTimeEngine
+from backend.ledger_ws import pump_ledger
 
 app = FastAPI()
+
+_STATIC = Path(__file__).resolve().parent.parent / "static" / "ledger"
+if _STATIC.is_dir():
+    app.mount(
+        "/ledger-ui",
+        StaticFiles(directory=str(_STATIC), html=True),
+        name="ledger_ui",
+    )
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -300,3 +312,17 @@ def get_channel_stats():
             vol_matrix[key] = vol_matrix.get(key, 0) + 1
 
     return {"channels": stats, "volume": vol_matrix}
+
+
+@app.websocket("/ws/ledger")
+async def ws_ledger(websocket: WebSocket):
+    await websocket.accept()
+    try:
+        await pump_ledger(websocket, engine)
+    except WebSocketDisconnect:
+        pass
+    except Exception:
+        try:
+            await websocket.close()
+        except Exception:
+            pass
